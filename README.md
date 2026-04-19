@@ -1,13 +1,13 @@
-# Flow Matching — Tutorial on CMS Jet Data
+# Flow Matching — Tutorial on Particle Jet from a CMS-like dataset 
 
-A three-notebook tutorial that builds up **Flow Matching** from scratch and applies it to simulating reconstruction-level jet features from gen-level features at CMS (a fast ML surrogate for detector simulation).
+A three-notebook tutorial that builds up **Flow Matching** from scratch and applies it to simulating reconstruction-level jet features from gen-level features on a CMS-like experiment dataset.
 
 ## Notebooks
 
 | File | What it covers |
 |---|---|
 | `01_flow_matching_fundamentals.ipynb` | Build Flow Matching on 2D toy data: ODEs, Euler + Heun integrators, conditional paths, the CFM loss, a tiny MLP vector field, backward integration for invertibility. ✅ self-validating via `test_flow_matching.py` |
-| `02_conditional_flow_model.ipynb` | Apply conditional flow matching to CMS jet data — learn `p(reco \| gen)`. |
+| `02_conditional_flow_model.ipynb` | Apply conditional flow matching to CMS-like jet data — learn `p(reco \| gen)`. |
 | `03_sampling_and_evaluation.ipynb` | Generate reco-level samples, evaluate with ROC curves, Wasserstein distance, corner plots. |
 
 Each student notebook has a matching `*_solution.ipynb` with the reference implementation.
