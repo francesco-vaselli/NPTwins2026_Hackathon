@@ -73,7 +73,8 @@ test_euler_integrate(euler_integrate)
 
 ## Reference material
 
-- `lecture-notes.pdf` — full lecture notes on Flow Matching (morning seminar)
-- `An introduction to Flow Matching · Cambridge MLG Blog.pdf` — excellent external reference
-- `Vaselli_2024_Mach._Learn.__Sci._Technol._5_035007.pdf` — the paper behind Notebooks 2 and 3
+- Morning Seminar on Flow Matching
+- [MIT Class on Generative models from ODEs](https://diffusion.csail.mit.edu/2026/index.html)
+- [Camridge MLG intro to Flow Matching](https://mlg.eng.cam.ac.uk/blog/2024/01/20/flow-matching.html)
+- [Reference paper for later notebooks](https://arxiv.org/abs/2402.13684) — the paper behind Notebooks 2 and 3
 - `figs/` — pre-generated figures used in the notebooks
