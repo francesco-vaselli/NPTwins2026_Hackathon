@@ -1,10 +1,18 @@
 name: validate-and-merge
 
 # Runs on every PR (including from forks) that touches submissions/.
-# Uses pull_request_target so we have write perms to enable auto-merge,
-# but we NEVER execute any code from the PR — we only `git show` files
-# from the PR ref to validate them. The validator script itself is
-# checked out from the base branch (trusted).
+#
+# Uses pull_request_target so we have write perms, but we NEVER execute
+# any code from the PR — we only `git show` files from the PR ref to
+# validate them. The validator script itself is checked out from the
+# base branch (trusted).
+#
+# After validation, we merge the PR directly (no --auto, since the
+# default GITHUB_TOKEN cannot call enablePullRequestAutoMerge), then
+# rebuild LEADERBOARD.md inline. We do the rebuild inline because a
+# GITHUB_TOKEN-driven merge does not trigger downstream workflows
+# (GitHub's loop guard), so a separate build-leaderboard workflow
+# wouldn't fire on these merges.
 
 on:
   pull_request_target:
@@ -13,8 +21,8 @@ on:
       - 'submissions/**'
 
 permissions:
-  contents: read
-  pull-requests: write
+  contents: write          # merge PR + push leaderboard rebuild
+  pull-requests: write     # merge PR via gh
 
 concurrency:
   group: validate-${{ github.event.pull_request.number }}
@@ -42,8 +50,32 @@ jobs:
       - name: Validate submission
         run: python scripts/validate_submission.py --base origin/${{ github.event.pull_request.base.ref }} --head pr-head
 
-      - name: Enable auto-merge
+      - name: Merge PR
         if: success()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --repo "${{ github.repository }}"
+        run: gh pr merge "${{ github.event.pull_request.number }}" --squash --delete-branch --repo "${{ github.repository }}"
+
+      - name: Sync to merged main
+        if: success()
+        run: |
+          git fetch origin "${{ github.event.pull_request.base.ref }}"
+          git checkout "${{ github.event.pull_request.base.ref }}"
+          git pull --ff-only origin "${{ github.event.pull_request.base.ref }}"
+
+      - name: Rebuild leaderboard
+        if: success()
+        run: python scripts/build_leaderboard.py
+
+      - name: Commit + push leaderboard if changed
+        if: success()
+        run: |
+          if [ -n "$(git status --porcelain LEADERBOARD.md)" ]; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add LEADERBOARD.md
+            git commit -m "chore: rebuild leaderboard"
+            git push origin "${{ github.event.pull_request.base.ref }}"
+          else
+            echo "No leaderboard changes."
+          fi
