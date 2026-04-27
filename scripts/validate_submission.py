@@ -41,7 +41,12 @@ def run(cmd: list[str]) -> str:
 
 
 def changed_files(base: str, head: str) -> list[tuple[str, str]]:
-    out = run(["git", "diff", "--name-status", f"{base}..{head}"])
+    # Diff against the merge-base, not the base tip. Otherwise a PR
+    # whose branch is behind main will see files that changed on main
+    # (while the PR was open) as "modified" — even though the PR didn't
+    # touch them. The merge-base form shows only what the PR adds.
+    merge_base = run(["git", "merge-base", base, head]).strip()
+    out = run(["git", "diff", "--name-status", f"{merge_base}..{head}"])
     files = []
     for line in out.strip().splitlines():
         parts = line.split("\t")
