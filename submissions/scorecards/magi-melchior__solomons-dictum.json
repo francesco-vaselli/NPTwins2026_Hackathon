@@ -1,0 +1,22 @@
+{
+  "id": "magi-melchior__solomons-dictum",
+  "name": "magi-melchior",
+  "run_tag": "solomons-dictum",
+  "notes": "MELCHIOR-1: as scientist. Trigonometric path + Heun (200 NFE), hidden_dim=256, n_blocks=5, 150 epochs. Pattern Blue identified at t = 0.42; SEELE briefed.",
+  "timestamp": 1745740000,
+  "config": {
+    "path": "trigonometric",
+    "sampler": "heun",
+    "n_steps": 200,
+    "arch": {"reco_dim": 3, "cond_dim": 6, "time_dim": 32, "hidden_dim": 256, "n_blocks": 5},
+    "n_epochs": 150,
+    "warm_start_from": null,
+    "marduk_clearance": "NERV-A17"
+  },
+  "scorecard": {
+    "ws_per_feature": [0.0240, 4.5210, 0.2650],
+    "ws_sum": 4.8100,
+    "c2st": 0.0780,
+    "auc_delta_btag": 0.0140
+  }
+}
