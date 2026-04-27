@@ -10,10 +10,17 @@ leaderboard:
 - `build-leaderboard.yml` is kept as a manual / fallback workflow
   (e.g. for direct edits to a scorecard on `main` outside the PR flow).
 
-Because we use `gh pr merge --squash` directly (rather than `--auto`),
-no Personal Access Token is needed — the default `GITHUB_TOKEN`
-suffices. The trade-off is that the merge happens immediately when
-validation passes, not "whenever required checks turn green."
+The workflow uses a **fine-grained Personal Access Token** stored as
+the repo secret `LEADERBOARD_TOKEN`. This is required because:
+
+1. The default `GITHUB_TOKEN` cannot call `enablePullRequestAutoMerge`
+   (so we use direct `gh pr merge --squash` instead).
+2. On personal repos, `github-actions[bot]` cannot be added to a
+   ruleset bypass list, so a `GITHUB_TOKEN`-driven push to `main` is
+   blocked by "require PR" rules.
+
+A PAT minted by the repo admin acts as the admin user, which IS in the
+ruleset bypass list, so its pushes go through.
 
 For everything to work, do these one-time steps in GitHub repo
 **Settings**:
@@ -24,7 +31,28 @@ For everything to work, do these one-time steps in GitHub repo
 - ✅ "Read and write permissions"
 - ✅ "Allow GitHub Actions to create and approve pull requests"
 
-## 2. Branch protection on `main`
+## 2. Mint a fine-grained PAT and add as a repo secret
+
+**Personal Settings (top-right avatar) → Developer settings → Personal
+access tokens → Fine-grained tokens → Generate new token**:
+
+- Token name: `NPTwins2026 leaderboard bot`
+- Expiration: as you like (e.g. 90 days; renew before expiry)
+- Resource owner: your account
+- Repository access: **Only select repositories** → `NPTwins2026_Hackathon`
+- Repository permissions:
+  - **Contents**: Read and write
+  - **Pull requests**: Read and write
+  - **Metadata**: Read (auto-selected)
+- Generate, copy the `github_pat_...` value once.
+
+Then **Repo Settings → Secrets and variables → Actions → New repository
+secret**:
+
+- Name: `LEADERBOARD_TOKEN`
+- Value: paste the PAT.
+
+## 3. Branch protection on `main`
 **Settings → Branches → Branch protection rule** (or **Rulesets**):
 
 - Branch name pattern: `main`
@@ -41,7 +69,7 @@ The workflow itself is the gate: it merges only when validation
 succeeds, and forks have no write access to `upstream/main` regardless,
 so students cannot bypass the validator.
 
-## 3. Auto-merge — NOT needed
+## 4. Auto-merge — NOT needed
 
 The "Allow auto-merge" repo setting and `gh pr merge --auto` are not
 used in this design. You can leave the repo setting on or off; it has

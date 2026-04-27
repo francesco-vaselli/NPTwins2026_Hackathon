@@ -37,6 +37,9 @@ jobs:
         with:
           # Default ref is the base branch — DO NOT change to PR head.
           fetch-depth: 0
+          # Use the PAT so subsequent `git push` is authenticated as the
+          # repo admin (which bypasses the "require PR" ruleset).
+          token: ${{ secrets.LEADERBOARD_TOKEN }}
 
       - name: Fetch PR head
         run: |
@@ -53,7 +56,9 @@ jobs:
       - name: Merge PR
         if: success()
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # PAT acts as repo admin → bypasses ruleset and can merge
+          # even with branch protection in place.
+          GH_TOKEN: ${{ secrets.LEADERBOARD_TOKEN }}
         run: gh pr merge "${{ github.event.pull_request.number }}" --squash --delete-branch --repo "${{ github.repository }}"
 
       - name: Sync to merged main
