@@ -1,0 +1,22 @@
+{
+  "id": "magi-casper__pattern-blue",
+  "name": "magi-casper",
+  "run_tag": "pattern-blue",
+  "notes": "CASPER-3: as woman. Linear path with cosine LR decay, 400 epochs, Heun at only 50 inner steps (NFE=100). Intuition over compute; AT field nominal.",
+  "timestamp": 1745740200,
+  "config": {
+    "path": "linear",
+    "sampler": "heun",
+    "n_steps": 50,
+    "arch": {"reco_dim": 3, "cond_dim": 6, "time_dim": 16, "hidden_dim": 128, "n_blocks": 3},
+    "n_epochs": 400,
+    "lr_schedule": "cosine",
+    "geofront_depth_m": 900
+  },
+  "scorecard": {
+    "ws_per_feature": [0.0380, 5.6120, 0.3170],
+    "ws_sum": 5.9670,
+    "c2st": 0.1150,
+    "auc_delta_btag": 0.0310
+  }
+}
