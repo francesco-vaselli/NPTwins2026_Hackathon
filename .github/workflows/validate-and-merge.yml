@@ -1,0 +1,49 @@
+name: validate-and-merge
+
+# Runs on every PR (including from forks) that touches submissions/.
+# Uses pull_request_target so we have write perms to enable auto-merge,
+# but we NEVER execute any code from the PR — we only `git show` files
+# from the PR ref to validate them. The validator script itself is
+# checked out from the base branch (trusted).
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'submissions/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: validate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base (trusted scripts)
+        uses: actions/checkout@v4
+        with:
+          # Default ref is the base branch — DO NOT change to PR head.
+          fetch-depth: 0
+
+      - name: Fetch PR head
+        run: |
+          git fetch origin "pull/${{ github.event.pull_request.number }}/head:pr-head"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate submission
+        run: python scripts/validate_submission.py --base origin/${{ github.event.pull_request.base.ref }} --head pr-head
+
+      - name: Enable auto-merge
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --repo "${{ github.repository }}"
