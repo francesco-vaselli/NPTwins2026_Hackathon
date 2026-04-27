@@ -1,0 +1,22 @@
+{
+  "id": "magi-balthasar__lcl-bath",
+  "name": "magi-balthasar",
+  "run_tag": "lcl-bath",
+  "notes": "BALTHASAR-2: as mother. Warm-started from the NB2 checkpoint, fine-tuned with the trig path; Heun 100, hidden_dim=128, 80 additional epochs. Conservative — refuses to overfit her child.",
+  "timestamp": 1745740100,
+  "config": {
+    "path": "trigonometric",
+    "sampler": "heun",
+    "n_steps": 100,
+    "arch": {"reco_dim": 3, "cond_dim": 6, "time_dim": 16, "hidden_dim": 128, "n_blocks": 3},
+    "n_epochs": 80,
+    "warm_start_from": "model_nb2.pt",
+    "synchronization_ratio": 0.41
+  },
+  "scorecard": {
+    "ws_per_feature": [0.0310, 5.0120, 0.2810],
+    "ws_sum": 5.3240,
+    "c2st": 0.0920,
+    "auc_delta_btag": 0.0220
+  }
+}
