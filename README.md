@@ -8,9 +8,11 @@ A three-notebook tutorial that builds up **Flow Matching** from scratch and appl
 |---|---|
 | `01_flow_matching_fundamentals.ipynb` | Build Flow Matching on 2D toy data: ODEs, Euler + Heun integrators, conditional paths, the CFM loss, a tiny MLP vector field, backward integration for invertibility. ✅ self-validating via `test_flow_matching.py` |
 | `02_conditional_flow_model.ipynb` | Apply conditional flow matching to CMS-like jet data — learn `p(reco \| gen)`. |
-| `03_sampling_and_evaluation.ipynb` | Generate reco-level samples, evaluate with ROC curves, Wasserstein distance, corner plots. |
+| `03_sampling_and_evaluation.ipynb` | Generate reco-level samples, Wasserstein distance, competition. |
 
 Each student notebook has a matching `*_solution.ipynb` with the reference implementation.
+
+Additionally, if you manage to reach the end of NB 3 you are welcome to submit your best model to be ranked in the LEADERBOARD.md! More instructions at the end of the notebook.
 
 ## Getting started
 
@@ -55,15 +57,6 @@ source .venv/bin/activate
 uv pip install -r requirements.txt
 python -m ipykernel install --user --name flow-matching-tutorial --display-name "Flow Matching"
 jupyter notebook
-```
-
-## Using the test suite
-
-`test_flow_matching.py` ships with Notebook 1. The student notebook calls into it automatically after each task — run the cells as you go and watch the ✅s light up. If you prefer to run the tests by hand:
-
-```python
-from test_flow_matching import test_euler_integrate
-test_euler_integrate(euler_integrate)
 ```
 
 ## Hardware
