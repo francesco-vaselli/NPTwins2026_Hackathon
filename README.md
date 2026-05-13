@@ -27,8 +27,8 @@ Click the "Open in Colab" badge at the top of any notebook. The first cell insta
 `venv` and `pip` ship with Python itself — no extra installers. You just need Python ≥ 3.10.
 
 ```bash
-git clone https://github.com/fvaselli/NP_Twins.git
-cd NP_Twins
+git clone https://github.com/francesco-vaselli/NPTwins2026_Hackathon.git
+cd NPTwins2026_Hackathon
 
 python -m venv .venv
 source .venv/bin/activate           # Windows: .venv\Scripts\activate
